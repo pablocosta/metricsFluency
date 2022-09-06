@@ -2,6 +2,7 @@ import spacy
 import numpy as np
 from spacy_syllables import SpacySyllables
 from numpy import mean
+from scipy.stats import gmean
 from math import log
 from collections import Counter
 
@@ -49,7 +50,7 @@ fine_to_coarse = {'ADPPRON': 'ADP',
                 'PNOUN': 'NOUN'}
 
 def loadPsicolinguistico():
-    with open("./psicolinguistico.txt", 'r', encoding="utf-8") as fp:
+    with open("./data/psicolinguistico.txt", 'r', encoding="utf-8") as fp:
         lines = fp.read().splitlines()[1:]
     lines = [i.split(',') for i in lines]
     dic = {}
@@ -369,7 +370,22 @@ def getHonoreStatistics(text):
 print(getHonoreStatistics("O acessório polêmico entrou no projeto, de autoria do senador Cícero Lucena (PSDB-PB), graças a uma emenda aprovada na Comissão de Educação do Senado em outubro. Foi o senador Flávio Arns (PT-PR) quem sugeriu a inclusão da peça entre os itens do uniforme de alunos dos ensinos Fundamental e Médio nas escolas municipais, estaduais e federais. Ele defende a medida como forma de proteger crianças e adolescentes dos males provocados pelo excesso de exposição aos raios solares. Se a ideia for aprovada, os estudantes receberão dois conjuntos anuais, completados por calçado, meias, calça e camiseta."))
 
 
+def gScore(text: str):
+    #base sum. usar de forma encapsulada em um somatório para cada sentença do córpus de teste
+    
+    return gmean([getTokenRation(text), getAcc(text)])
+
+print(gScore("O acessório polêmico entrou no projeto, de autoria do senador Cícero Lucena (PSDB-PB), graças a uma emenda aprovada na Comissão de Educação do Senado em outubro. Foi o senador Flávio Arns (PT-PR) quem sugeriu a inclusão da peça entre os itens do uniforme de alunos dos ensinos Fundamental e Médio nas escolas municipais, estaduais e federais. Ele defende a medida como forma de proteger crianças e adolescentes dos males provocados pelo excesso de exposição aos raios solares. Se a ideia for aprovada, os estudantes receberão dois conjuntos anuais, completados por calçado, meias, calça e camiseta."))
+
+def jScore(text: str):
+    tokens = []
+    #base sum. usar de forma encapsulada em um somatório para cada sentença do córpus de teste
+    for i in nlp(text):
+        tokens.append(i.text.lower())
 
 
+    return getTokenRation(text) * getAcc() / len(tokens)
+
+print(jScore("O acessório polêmico entrou no projeto, de autoria do senador Cícero Lucena (PSDB-PB), graças a uma emenda aprovada na Comissão de Educação do Senado em outubro. Foi o senador Flávio Arns (PT-PR) quem sugeriu a inclusão da peça entre os itens do uniforme de alunos dos ensinos Fundamental e Médio nas escolas municipais, estaduais e federais. Ele defende a medida como forma de proteger crianças e adolescentes dos males provocados pelo excesso de exposição aos raios solares. Se a ideia for aprovada, os estudantes receberão dois conjuntos anuais, completados por calçado, meias, calça e camiseta."))
 
 
