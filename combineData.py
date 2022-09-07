@@ -2,8 +2,8 @@ from imp import acquire_lock
 from ssl import MemoryBIO
 import pandas as pd
 
-fileSample     = open("./data/inDomainTrain.tsv", "r", encoding="utf-8")
-fileTranslated = open("./data/inDomainTrain.tsv_translated", "r", encoding="utf-8")
+fileSample     = open("./data/outDomainDev.tsv", "r", encoding="utf-8")
+fileTranslated = open("./data/outDomainDev.tsv_translated", "r", encoding="utf-8")
 
 
 
@@ -45,17 +45,42 @@ for line in fileTranslated:
 
 dfTarget = pd.DataFrame.from_dict({"TargetPT": targetText})
 
+"""
+  para gerar inDomainTrainFinal
+
+  dfOrig = dfOrig.drop(0)
+  dfOrig = dfOrig.reset_index()
+  
+  dfOrig = dfOrig.drop(8549)
+  dfOrig = dfOrig.reset_index()
+
+  dfTarget = dfTarget.drop(0)
+  dfTarget = dfTarget.reset_index()
+
+  para gerar inDomainDevFinal
+
+  dfOrig = dfOrig.drop(0)
+  dfOrig = dfOrig.reset_index()
+
+  dfOrig = dfOrig.drop(525)
+  dfOrig = dfOrig.reset_index()
+
+  dfTarget = dfTarget.drop(0)
+  dfTarget = dfTarget.reset_index()
+"""
 
 dfOrig = dfOrig.drop(0)
-dfOrig = dfOrig.reset_index()
- 
-dfOrig = dfOrig.drop(8549)
 dfOrig = dfOrig.reset_index()
 
 dfTarget = dfTarget.drop(0)
 dfTarget = dfTarget.reset_index()
 
+dfOrig = dfOrig.drop(513)
+dfOrig = dfOrig.reset_index()
+
 print(pd.concat([dfTarget, dfOrig], axis=1))
 
 
-pd.concat([dfTarget, dfOrig], axis=1)[["origEN", "annotator", "classe"]].to_parquet('./data/inDomainTrainFinal.gzip', compression='gzip')
+
+
+pd.concat([dfTarget, dfOrig], axis=1)[["TargetPT", "annotator", "classe"]].to_parquet('./data/outDomainDevFinal.gzip', compression='gzip')
